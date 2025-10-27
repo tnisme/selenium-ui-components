@@ -1,10 +1,10 @@
 package com.seleniumui.core;
 
-import com.seleniumui.components.Button;
-import com.seleniumui.components.Dropdown;
-import com.seleniumui.components.Input;
+import com.seleniumui.utils.DriverListener;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 
 public class ComponentFactory {
 
@@ -13,18 +13,35 @@ public class ComponentFactory {
     private ComponentFactory() {}
 
     public static void initialize(WebDriver driver) {
-        webDriver = driver;
+        if (driver == null)
+            throw new IllegalArgumentException("WebDriver cannot be null");
+
+        DriverListener listener = new DriverListener();
+
+        webDriver = new EventFiringDecorator<>(listener).decorate(driver);
+
+        System.out.println("[ComponentFactory] WebDriver initialized with listener: "
+                + listener.getClass().getSimpleName());
     }
 
-    public static Button button(By locator) {
-        return new Button(webDriver, locator);
+    public static void initialize(WebDriver driver, WebDriverListener... listeners) {
+        if (driver == null)
+            throw new IllegalArgumentException("WebDriver cannot be null");
+
+        WebDriver decorated = driver;
+        for (WebDriverListener listener : listeners) {
+            decorated = new EventFiringDecorator<>(listener).decorate(decorated);
+        }
+
+        webDriver = decorated;
     }
 
-    public static Dropdown dropdown(By locator) {
-        return new Dropdown(webDriver, locator);
-    }
-
-    public static Input input(By locator) {
-        return new Input(webDriver, locator);
+    public static <T extends BaseComponent> T createComponent(Class<T> componentClass, By locator) {
+        try {
+            return componentClass.getDeclaredConstructor(WebDriver.class, By.class)
+                    .newInstance(webDriver, locator);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create component: " + componentClass.getSimpleName(), e);
+        }
     }
 }

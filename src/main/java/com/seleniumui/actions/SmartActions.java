@@ -30,7 +30,6 @@ public class SmartActions {
             }
             if (!element.isEnabled()) throw new ElementNotInteractableException(actionType.toString() + " failed: Element is not enabled");
             action.accept(element);
-            System.out.println(actionType.toString() + " succeeded on element: " + locator.toString());
         });
     }
 

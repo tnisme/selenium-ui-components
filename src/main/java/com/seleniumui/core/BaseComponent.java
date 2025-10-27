@@ -18,6 +18,10 @@ public class BaseComponent {
         return SmartWait.forVisible(driver, locator);
     }
 
+    public boolean isDisplayed() {
+        return find().isDisplayed();
+    }
+
     public String getAttribute(String attribute) {
         return find().getAttribute(attribute);
     }

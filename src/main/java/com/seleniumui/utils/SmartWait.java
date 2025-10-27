@@ -1,12 +1,15 @@
 package com.seleniumui.utils;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public final class SmartWait {
@@ -49,9 +52,9 @@ public final class SmartWait {
 
         FluentWait<WebDriver> wait = createWait(driver, timeoutMs, pollIntervalMs);
         try {
-            waitForPageLoadComplete(driver, timeoutMs, pollIntervalMs);
-            waitUntilAjaxDone(driver, timeoutMs, pollIntervalMs);
-            waitForJsCondition(driver, JsHelper.isGlobalOverlayPresent(driver), timeoutMs, pollIntervalMs);
+            BiDi biDi = ((HasBiDi) driver).getBiDi();
+            BiDiSmartWait smartWait = new BiDiSmartWait.Builder().withDriver(driver).withBiDi(biDi).withTimeout(30, TimeUnit.SECONDS).build();
+            smartWait.waitForPageReady();
             return wait.until(condition);
         } catch (TimeoutException e) {
             throw new TimeoutException("Timed out after " + timeoutMs + "ms waiting for: " +
@@ -70,10 +73,9 @@ public final class SmartWait {
     public static void waitForPageLoadComplete(WebDriver driver, long timeoutMs, long pollIntervalMs) {
         Objects.requireNonNull(driver, "WebDriver cannot be null");
 
-        createWait(driver, timeoutMs, pollIntervalMs).until(driver1 ->
-            "complete".equals(((JavascriptExecutor) driver1)
-                .executeScript("return document.readyState"))
-        );
+        BiDi biDi = ((HasBiDi) driver).getBiDi();
+        BiDiSmartWait smartWait = new BiDiSmartWait.Builder().withDriver(driver).withBiDi(biDi).withTimeout(30, TimeUnit.SECONDS).build();
+        smartWait.waitFor(BiDiSmartWait.WaitCondition.DOM_READY);
     }
 
     public static void waitForPageLoadComplete(WebDriver driver) {
@@ -82,21 +84,10 @@ public final class SmartWait {
 
     public static void waitUntilAjaxDone(WebDriver driver, long timeoutMs, long pollIntervalMs) {
         Objects.requireNonNull(driver, "WebDriver cannot be null");
-        FluentWait<WebDriver> wait = createWait(driver, timeoutMs, pollIntervalMs);
-        try {
-            wait.until(d -> {
-                JavascriptExecutor js = (JavascriptExecutor) d;
-                boolean jqueryComplete = (Boolean) js.executeScript(
-                    "if (window.jQuery) { return jQuery.active === 0; } return true;");
-                boolean fetchComplete = (Boolean) js.executeScript(
-                    "if (window._fetchActiveRequests) { return _fetchActiveRequests === 0; } return true;");
-                return jqueryComplete && fetchComplete;
-            });
-        } catch (TimeoutException e) {
-            throw new TimeoutException("Timed out waiting for AJAX/Fetch requests to complete", e);
-        } catch (WebDriverException e) {
-            throw new WebDriverException("Failed to check AJAX status: " + e.getMessage(), e);
-        }
+
+        BiDi biDi = ((HasBiDi) driver).getBiDi();
+        BiDiSmartWait smartWait = new BiDiSmartWait.Builder().withDriver(driver).withBiDi(biDi).withTimeout(30, TimeUnit.SECONDS).build();
+        smartWait.waitFor(BiDiSmartWait.WaitCondition.NETWORK_IDLE);
     }
 
     public static void waitUntilAjaxDone(WebDriver driver) {
