@@ -6,7 +6,9 @@ import com.seleniumui.utils.SmartWait;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SmartActions {
 
@@ -17,7 +19,8 @@ public class SmartActions {
         JS_CLICK,
         SCROLL_TO_ELEMENT,
         SEND_KEYS,
-        CLEAR
+        CLEAR,
+        GET_ATTRIBUTE
     }
 
     static void executeWithWaitAndRetry(WebDriver driver, By locator, Consumer<WebElement> action, ActionType actionType) {
@@ -33,11 +36,32 @@ public class SmartActions {
         });
     }
 
+    static <T> T executeWithWaitAndRetry(WebDriver driver, By locator, Function<WebElement, T> action) {
+        return RetryExecutor.getWithRetry(() -> {
+            WebElement element = SmartWait.forVisible(driver, locator);
+            if (!element.isEnabled()) throw new ElementNotInteractableException("Action failed: Element is not enabled");
+            return action.apply(element);
+        });
+    }
+
+    public static String getAttribute(WebDriver driver, By locator, String attribute) {
+        return executeWithWaitAndRetry(driver, locator, el -> Objects.requireNonNull(el.getAttribute(attribute)));
+    }
+
     public static void click(WebDriver driver, By locator) {
         executeWithWaitAndRetry(driver, locator, el -> {
             JsHelper.scrollToElement(driver, locator);
             el.click();
         }, ActionType.CLICK);
+    }
+
+    public static void click(WebDriver driver, WebElement element) {
+        RetryExecutor.runWithRetry(() -> {
+            SmartWait.forClickable(driver, element);
+            if (!element.isEnabled()) throw new ElementNotInteractableException("CLICK failed: Element is not enabled");
+            JsHelper.scrollToElement(driver, element);
+            element.click();
+        });
     }
 
     public static void doubleClick(WebDriver driver, By locator) {
@@ -64,46 +88,27 @@ public class SmartActions {
         }, ActionType.JS_CLICK);
     }
 
-    public static SmartActions.Builder forElement(WebDriver driver, By locator) {
-        return new SmartActions.Builder(driver, locator);
+    public static void clear(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, WebElement::clear, ActionType.CLEAR);
     }
 
-    public static class Builder {
-        private final WebDriver driver;
-        private final By locator;
-        private final StringBuilder inputBuilder = new StringBuilder();
+    public static void type(WebDriver driver, By locator, String text) {
+        executeWithWaitAndRetry(driver, locator, el -> el.sendKeys(text), ActionType.SEND_KEYS);
+    }
 
-        public Builder(WebDriver driver, By locator) {
-            this.driver = driver;
-            this.locator = locator;
-        }
+    public static void pressEnter(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, el -> el.sendKeys(Keys.ENTER), ActionType.SEND_KEYS);
+    }
 
-        public SmartActions.Builder clear() {
-            executeWithWaitAndRetry(driver, locator, WebElement::clear, ActionType.CLEAR);
-            return this;
-        }
+    public static void pressTab(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, el -> el.sendKeys(Keys.TAB), ActionType.SEND_KEYS);
+    }
 
-        public SmartActions.Builder type(String text) {
-            inputBuilder.append(text);
-            return this;
-        }
+    public static void pressKey(WebDriver driver, By locator, CharSequence key) {
+        executeWithWaitAndRetry(driver, locator, el -> el.sendKeys(key), ActionType.SEND_KEYS);
+    }
 
-        public SmartActions.Builder pressEnter() {
-            inputBuilder.append(Keys.ENTER);
-            return this;
-        }
-
-        public SmartActions.Builder pressTab() {
-            inputBuilder.append(Keys.TAB);
-            return this;
-        }
-
-        public void perform() {
-            String text = inputBuilder.toString();
-            if (text.isEmpty()) return;
-
-            executeWithWaitAndRetry(driver, locator, el -> el.sendKeys(text), ActionType.SEND_KEYS);
-            inputBuilder.setLength(0);
-        }
+    public static String getText(WebDriver driver, By locator) {
+        return executeWithWaitAndRetry(driver, locator, WebElement::getText);
     }
 }

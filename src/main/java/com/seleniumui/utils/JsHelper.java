@@ -3,6 +3,7 @@ package com.seleniumui.utils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class JsHelper {
 
@@ -16,7 +17,19 @@ public class JsHelper {
         }
     }
 
+    public static void scrollToElement(WebDriver driver, WebElement element) {
+        if (!isElementInViewport(driver, element) || isCoveredByAnotherElement(driver, element)) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});", element);
+            System.out.println("Scrolled to element.");
+        }
+    }
+
     public static boolean isElementInViewport(WebDriver driver, By locator) {
+        return isElementInViewport(driver, driver.findElement(locator));
+    }
+
+    public static boolean isElementInViewport(WebDriver driver, WebElement element) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         boolean isInViewport = (Boolean) js.executeScript(
                 "const rect = arguments[0].getBoundingClientRect();" +
@@ -26,13 +39,17 @@ public class JsHelper {
                         "rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && " +
                         "rect.right <= (window.innerWidth || document.documentElement.clientWidth)" +
                         ");",
-                driver.findElement(locator)
+                element
         );
-        System.out.println("Element " + locator.toString() + " is in viewport: " + isInViewport);
+        System.out.println("Element is in viewport: " + isInViewport);
         return isInViewport;
     }
 
     public static boolean isCoveredByAnotherElement(WebDriver driver, By locator) {
+        return isCoveredByAnotherElement(driver, driver.findElement(locator));
+    }
+
+    public static boolean isCoveredByAnotherElement(WebDriver driver, WebElement element) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         boolean isCovered = (Boolean) js.executeScript(
                 "const elem = arguments[0];" +
@@ -41,7 +58,7 @@ public class JsHelper {
                         "const cy = rect.top + rect.height / 2;" +
                         "const topElem = document.elementFromPoint(cx, cy);" +
                         "return !(elem === topElem || elem.contains(topElem));",
-                driver.findElement(locator)
+                element
         );
         System.out.println("Element is covered by another element: " + isCovered);
         return isCovered;

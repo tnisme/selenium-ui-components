@@ -2,36 +2,10 @@ package com.seleniumui.components;
 
 import com.seleniumui.core.ComponentFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
-public class ButtonTest {
-
-    private WebDriver driver;
-    private long startTime;
-    private long totalTime;
-
-    @BeforeTest
-    public void setupTestRun() {
-        startTime = System.currentTimeMillis();
-    }
-
-    @AfterTest
-    public void afterTestRun() {
-        totalTime = System.currentTimeMillis() - startTime;
-        System.out.printf("Total test execution time: %.2f seconds%n", totalTime / 1000.0);
-    }
-
-    @BeforeClass
-    public void setup() {
-        ChromeOptions options = new ChromeOptions();
-        options.setCapability("webSocketUrl", true);
-        driver = new ChromeDriver(options);
-        ComponentFactory.initialize(driver);
-    }
+public class ButtonTest extends BaseTest {
 
     @Test
     public void testClickButtonOnRealPage() {
@@ -54,10 +28,5 @@ public class ButtonTest {
         Button dynamicButton2 = ComponentFactory.createComponent(Button.class, By.id("visibleAfter"));
         dynamicButton1.click();
         dynamicButton2.click();
-    }
-
-    @AfterClass
-    public void tearDown() {
-        if (driver != null) driver.quit();
     }
 }

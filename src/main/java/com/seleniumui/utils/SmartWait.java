@@ -70,6 +70,15 @@ public final class SmartWait {
         return until(driver, condition, timeoutMs, DEFAULT_POLL_INTERVAL_MS);
     }
 
+    public static void waitWithBiDi(WebDriver driver, BiDiSmartWait.WaitCondition condition) {
+        Objects.requireNonNull(driver, "WebDriver cannot be null");
+
+        BiDi biDi = ((HasBiDi) driver).getBiDi();
+        BiDiSmartWait smartWait = new BiDiSmartWait.Builder().withDriver(driver).withBiDi(biDi).withTimeout(30, TimeUnit.SECONDS).build();
+        smartWait.waitFor(condition);
+
+    }
+
     public static void waitForPageLoadComplete(WebDriver driver, long timeoutMs, long pollIntervalMs) {
         Objects.requireNonNull(driver, "WebDriver cannot be null");
 
@@ -92,23 +101,6 @@ public final class SmartWait {
 
     public static void waitUntilAjaxDone(WebDriver driver) {
         waitUntilAjaxDone(driver, DEFAULT_AJAX_TIMEOUT_MS, DEFAULT_POLL_INTERVAL_MS);
-    }
-
-    public static void waitForJsCondition(WebDriver driver, boolean jsScript, long timeoutMs, long pollIntervalMs) {
-        Objects.requireNonNull(driver, "WebDriver cannot be null");
-        FluentWait<WebDriver> wait = createWait(driver, timeoutMs, pollIntervalMs);
-        try {
-            wait.until(d -> {
-                JavascriptExecutor js = (JavascriptExecutor) d;
-                return !(Boolean) js.executeScript(
-                    "return " + jsScript + ";"
-                );
-            });
-        } catch (TimeoutException e) {
-            throw new TimeoutException("Timed out waiting for overlays to disappear", e);
-        } catch (WebDriverException e) {
-            throw new WebDriverException("Failed to check overlay status: " + e.getMessage(), e);
-        }
     }
 
     public static WebElement forVisible(WebDriver driver, By locator) {

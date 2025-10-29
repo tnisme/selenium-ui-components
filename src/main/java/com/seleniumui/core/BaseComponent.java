@@ -1,5 +1,6 @@
 package com.seleniumui.core;
 
+import com.seleniumui.actions.SmartActions;
 import com.seleniumui.utils.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -23,11 +24,11 @@ public class BaseComponent {
     }
 
     public String getAttribute(String attribute) {
-        return find().getAttribute(attribute);
+        return SmartActions.getAttribute(driver, locator, attribute);
     }
 
     public String getText() {
-        return find().getText();
+        return SmartActions.getText(driver, locator);
     }
 
     public boolean isVisible() {
@@ -40,11 +41,7 @@ public class BaseComponent {
     }
 
     public boolean isEnabled() {
-        try {
-            return find().isEnabled();
-        } catch (Exception e) {
-            return false;
-        }
+        return find().isEnabled();
     }
 
 }

@@ -14,23 +14,33 @@ public class Input extends BaseComponent {
     }
 
     public void clear() {
-        SmartActions.forElement(driver, locator).clear().perform();
+        SmartActions.clear(driver, locator);
     }
 
     public void type(String text) {
-        SmartActions.forElement(driver, locator).type(text).perform();
+        SmartActions.type(driver, locator, text);
     }
 
     public void pressEnter() {
-        SmartActions.forElement(driver, locator).pressEnter().perform();
+        SmartActions.pressEnter(driver, locator);
     }
 
     public void pressTab() {
-        SmartActions.forElement(driver, locator).pressTab().perform();
+        SmartActions.pressTab(driver, locator);
     }
 
-    public void pressKey(CharSequence key) {
-        SmartActions.forElement(driver, locator).type(key.toString()).perform();
+    public void clearAndType(String text) {
+        clear();
+        type(text);
+    }
+
+    public void typeAndPressEnter(String text) {
+        type(text);
+        pressEnter();
+    }
+
+    public String getValue() {
+        return SmartActions.getAttribute(driver, locator, "value");
     }
 
     public void pressKeys(CharSequence... keys) {
@@ -38,6 +48,6 @@ public class Input extends BaseComponent {
         for (CharSequence key : keys) {
             combinedKeys.append(key);
         }
-        SmartActions.forElement(driver, locator).type(combinedKeys.toString()).perform();
+        SmartActions.pressKey(driver, locator, combinedKeys);
     }
 }
