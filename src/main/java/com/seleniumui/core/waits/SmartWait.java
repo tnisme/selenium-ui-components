@@ -1,4 +1,4 @@
-package com.seleniumui.utils;
+package com.seleniumui.core.waits;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.bidi.BiDi;

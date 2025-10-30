@@ -1,4 +1,4 @@
-package com.seleniumui.utils;
+package com.seleniumui.executors;
 
 import java.util.function.Supplier;
 

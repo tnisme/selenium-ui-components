@@ -1,4 +1,4 @@
-package com.seleniumui.utils;
+package com.seleniumui.core.waits;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;

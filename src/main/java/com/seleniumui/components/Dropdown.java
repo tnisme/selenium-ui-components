@@ -1,8 +1,8 @@
 package com.seleniumui.components;
 
-import com.seleniumui.actions.SmartActions;
+import com.seleniumui.core.actions.SmartActions;
 import com.seleniumui.core.BaseComponent;
-import com.seleniumui.utils.SmartWait;
+import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -213,7 +213,8 @@ public class Dropdown extends BaseComponent {
             try {
                 WebElement option = dropdown.findElement(
                         By.xpath(".//option[normalize-space()='" + text + "']"));
-                SmartActions.click(driver, option);
+                SmartWait.forClickable(driver, option);
+                SmartActions.click(option);
             } catch (Exception ex) {
                 throw new RuntimeException("Cannot select option with text: " + text, ex);
             }
@@ -221,13 +222,16 @@ public class Dropdown extends BaseComponent {
     }
 
     private void selectCustomByText(WebElement dropdown, String text) {
-        SmartActions.click(driver, dropdown);
+        SmartWait.forClickable(driver, dropdown);
+        SmartActions.click(dropdown);
         WebElement option = findCustomOption(text);
-        SmartActions.click(driver, option);
+        SmartWait.forClickable(driver, option);
+        SmartActions.click(option);
     }
 
     private void selectCustomByTexts(WebElement dropdown, List<String> texts) {
-        SmartActions.click(driver, dropdown);
+        SmartWait.forClickable(driver, dropdown);
+        SmartActions.click(dropdown);
 
         for (String text : texts) {
             WebElement option = findCustomOption(text);
@@ -239,7 +243,8 @@ public class Dropdown extends BaseComponent {
 
     private void addCustomSelectionByText(WebElement dropdown, String text) {
         if (!isCustomDropdownOpen(dropdown)) {
-            SmartActions.click(driver, dropdown);
+            SmartWait.forClickable(driver, dropdown);
+            SmartActions.click(dropdown);
         }
 
         WebElement option = findCustomOption(text);
@@ -247,13 +252,16 @@ public class Dropdown extends BaseComponent {
     }
 
     private void selectCustomByValue(WebElement dropdown, String value) {
-        SmartActions.click(driver, dropdown);
+        SmartWait.forClickable(driver, dropdown);
+        SmartActions.click(dropdown);
         WebElement option = findOptionByValue(value);
-        SmartActions.click(driver, option);
+        SmartWait.forClickable(driver, option);
+        SmartActions.click(option);
     }
 
     private void selectCustomByValues(WebElement dropdown, List<String> values) {
-        SmartActions.click(driver, dropdown);
+        SmartWait.forClickable(driver, dropdown);
+        SmartActions.click(dropdown);
 
         for (String value : values) {
             WebElement option = findOptionByValue(value);
@@ -272,8 +280,8 @@ public class Dropdown extends BaseComponent {
                     By.xpath(".//*[local-name()='svg'] | " +
                             ".//*[contains(@class, 'remove')] | " +
                             ".//*[contains(@class, 'clear')]"));
-
-            SmartActions.click(driver, removeButton);
+            SmartWait.forClickable(driver, removeButton);
+            SmartActions.click(removeButton);
             return;
 
         } catch (Exception e) {
@@ -281,7 +289,8 @@ public class Dropdown extends BaseComponent {
         }
 
         if (!isCustomDropdownOpen(dropdown)) {
-            SmartActions.click(driver, dropdown);
+            SmartWait.forClickable(driver, dropdown);
+            SmartActions.click(dropdown);
         }
 
         WebElement option = findCustomOption(text);
@@ -294,7 +303,8 @@ public class Dropdown extends BaseComponent {
                     By.xpath(".//*[contains(@class, 'multiValue')]//*[local-name()='svg']"));
 
             for (WebElement removeButton : removeButtons) {
-                SmartActions.click(driver, removeButton);
+                SmartWait.forClickable(driver, removeButton);
+                SmartActions.click(removeButton);
             }
         } catch (Exception e) {
             List<WebElement> selectedOptions = findCustomSelectedOptions(dropdown);
@@ -591,10 +601,11 @@ public class Dropdown extends BaseComponent {
         try {
             WebElement checkbox = option.findElement(By.xpath(".//input[@type='checkbox']"));
             if (!checkbox.isSelected()) {
-                SmartActions.click(driver, checkbox);
+                SmartWait.forClickable(driver, checkbox);
+                SmartActions.click(checkbox);
             }
         } catch (Exception e) {
-            SmartActions.click(driver, option);
+            SmartActions.click(option);
         }
     }
 
@@ -602,18 +613,21 @@ public class Dropdown extends BaseComponent {
         try {
             WebElement checkbox = option.findElement(By.xpath(".//input[@type='checkbox']"));
             if (checkbox.isSelected()) {
-                SmartActions.click(driver, checkbox);
+                SmartWait.forClickable(driver, checkbox);
+                SmartActions.click(checkbox);
             }
         } catch (Exception e) {
-            SmartActions.click(driver, option);
+            SmartWait.forClickable(driver, option);
+            SmartActions.click(option);
         }
     }
 
     private void closeCustomDropdown(WebElement dropdown) {
         try {
-            SmartActions.click(driver, dropdown);
+            SmartWait.forClickable(driver, dropdown);
+            SmartActions.click(dropdown);
         } catch (Exception e) {
-            // Ignore if cannot close
+            // Ignore if it cannot close
         }
     }
 

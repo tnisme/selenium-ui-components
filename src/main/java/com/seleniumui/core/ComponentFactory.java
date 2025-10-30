@@ -1,6 +1,6 @@
 package com.seleniumui.core;
 
-import com.seleniumui.utils.DriverListener;
+import com.seleniumui.listeners.DriverListener;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;

@@ -1,4 +1,4 @@
-package com.seleniumui.utils;
+package com.seleniumui.executors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -90,6 +90,16 @@ public class JsExecutor {
         boolean isPresent = (Boolean) ((JavascriptExecutor) driver).executeScript(script);
         System.out.println("Global overlay present: " + isPresent);
         return isPresent;
+    }
+
+    public static void jsClick(WebDriver driver, By locator) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", driver.findElement(locator));
+    }
+
+    public static void focusElement(WebDriver driver, By locator) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].focus();", driver.findElement(locator));
     }
 
 }

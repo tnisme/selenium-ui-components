@@ -1,7 +1,7 @@
 package com.seleniumui.core;
 
-import com.seleniumui.actions.SmartActions;
-import com.seleniumui.utils.SmartWait;
+import com.seleniumui.core.actions.SmartActions;
+import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.*;
 
 public class BaseComponent {

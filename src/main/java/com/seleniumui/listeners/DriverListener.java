@@ -1,4 +1,4 @@
-package com.seleniumui.utils;
+package com.seleniumui.listeners;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
