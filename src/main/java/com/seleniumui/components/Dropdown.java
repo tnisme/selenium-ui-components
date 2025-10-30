@@ -602,6 +602,7 @@ public class Dropdown extends BaseComponent {
             WebElement checkbox = option.findElement(By.xpath(".//input[@type='checkbox']"));
             if (!checkbox.isSelected()) {
                 SmartWait.forClickable(driver, checkbox);
+                SmartActions.scrollToElement(driver, checkbox);
                 SmartActions.click(checkbox);
             }
         } catch (Exception e) {

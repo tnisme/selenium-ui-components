@@ -20,6 +20,10 @@ public class SmartActions {
         RetryExecutor.runWithRetry(() -> JsExecutor.scrollToElement(driver, locator));
     }
 
+    public static void scrollToElement(WebDriver driver, WebElement element) {
+        RetryExecutor.runWithRetry(() -> JsExecutor.scrollToElement(driver, element));
+    }
+
     public static void click(WebDriver driver, By locator) {
         click(driver.findElement(locator));
     }
