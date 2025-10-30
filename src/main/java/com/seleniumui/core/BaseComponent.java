@@ -31,15 +31,6 @@ public class BaseComponent {
         return SmartActions.getText(driver, locator);
     }
 
-    public boolean isVisible() {
-        try {
-            SmartWait.forVisible(driver, locator);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public boolean isEnabled() {
         return find().isEnabled();
     }
