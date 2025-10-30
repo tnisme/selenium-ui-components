@@ -18,7 +18,6 @@ public final class SmartWait {
 
     public static final long DEFAULT_AJAX_TIMEOUT_MS = 10000;
 
-    // Private constructor to prevent instantiation
     private SmartWait() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
@@ -123,12 +122,13 @@ public final class SmartWait {
         return until(driver, ExpectedConditions.elementToBeClickable(element));
     }
 
-    public static boolean forInvisibility(WebDriver driver, By locator) {
+    public static void forInvisible(WebDriver driver, By locator) {
         Objects.requireNonNull(locator, "Locator cannot be null");
-        try {
-            return until(driver, ExpectedConditions.invisibilityOfElementLocated(locator));
-        } catch (TimeoutException e) {
-            return false;
-        }
+        until(driver, ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    public static void forPresence(WebDriver driver, By locator) {
+        Objects.requireNonNull(locator, "Locator cannot be null");
+        until(driver, ExpectedConditions.presenceOfElementLocated(locator));
     }
 }

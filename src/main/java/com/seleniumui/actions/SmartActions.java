@@ -1,6 +1,6 @@
 package com.seleniumui.actions;
 
-import com.seleniumui.utils.JsHelper;
+import com.seleniumui.utils.JsExecutor;
 import com.seleniumui.utils.RetryExecutor;
 import com.seleniumui.utils.SmartWait;
 import org.openqa.selenium.*;
@@ -48,9 +48,12 @@ public class SmartActions {
         return executeWithWaitAndRetry(driver, locator, el -> Objects.requireNonNull(el.getAttribute(attribute)));
     }
 
+    public static void scrollToElement(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, el -> JsExecutor.scrollToElement(driver, locator), ActionType.SCROLL_TO_ELEMENT);
+    }
+
     public static void click(WebDriver driver, By locator) {
         executeWithWaitAndRetry(driver, locator, el -> {
-            JsHelper.scrollToElement(driver, locator);
             el.click();
         }, ActionType.CLICK);
     }
@@ -59,7 +62,6 @@ public class SmartActions {
         RetryExecutor.runWithRetry(() -> {
             SmartWait.forClickable(driver, element);
             if (!element.isEnabled()) throw new ElementNotInteractableException("CLICK failed: Element is not enabled");
-            JsHelper.scrollToElement(driver, element);
             element.click();
         });
     }
@@ -67,7 +69,6 @@ public class SmartActions {
     public static void doubleClick(WebDriver driver, By locator) {
         executeWithWaitAndRetry(driver, locator, el -> {
             Actions actions = new Actions(driver);
-            JsHelper.scrollToElement(driver, locator);
             actions.doubleClick(el).perform();
         }, ActionType.DOUBLE_CLICK);
     }
@@ -75,7 +76,6 @@ public class SmartActions {
     public static void rightClick(WebDriver driver, By locator) {
         executeWithWaitAndRetry(driver, locator, el -> {
             Actions actions = new Actions(driver);
-            JsHelper.scrollToElement(driver, locator);
             actions.contextClick(el).perform();
         }, ActionType.RIGHT_CLICK);
     }
@@ -83,7 +83,6 @@ public class SmartActions {
     public static void jsClick(WebDriver driver, By locator) {
         executeWithWaitAndRetry(driver, locator, el -> {
             JavascriptExecutor js = (JavascriptExecutor) driver;
-            JsHelper.scrollToElement(driver, locator);
             js.executeScript("arguments[0].click();", el);
         }, ActionType.JS_CLICK);
     }
@@ -110,5 +109,19 @@ public class SmartActions {
 
     public static String getText(WebDriver driver, By locator) {
         return executeWithWaitAndRetry(driver, locator, WebElement::getText);
+    }
+
+    public static void hoverOverElement(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, el -> {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(el).perform();
+        }, ActionType.SCROLL_TO_ELEMENT);
+    }
+
+    public static void focusElement(WebDriver driver, By locator) {
+        executeWithWaitAndRetry(driver, locator, el -> {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].focus();", el);
+        }, ActionType.SCROLL_TO_ELEMENT);
     }
 }

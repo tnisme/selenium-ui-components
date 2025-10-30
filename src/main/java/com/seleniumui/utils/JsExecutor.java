@@ -5,9 +5,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class JsHelper {
+public class JsExecutor {
 
-    private JsHelper() {}
+    private JsExecutor() {}
 
     public static void scrollToElement(WebDriver driver, By locator) {
         if (!isElementInViewport(driver, locator) || isCoveredByAnotherElement(driver, locator)) {
