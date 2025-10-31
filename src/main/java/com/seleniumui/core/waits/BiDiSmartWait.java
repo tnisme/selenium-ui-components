@@ -600,36 +600,4 @@ public class BiDiSmartWait {
             super.finalize();
         }
     }
-
-    // Enhanced Builder pattern
-    public static class Builder {
-        private WebDriver driver;
-        private BiDi biDi;
-        private long timeoutSeconds = 30;
-
-        public Builder withDriver(WebDriver driver) {
-            this.driver = driver;
-            return this;
-        }
-
-        public Builder withBiDi(BiDi biDi) {
-            this.biDi = biDi;
-            return this;
-        }
-
-        public Builder withTimeout(long timeout, TimeUnit unit) {
-            this.timeoutSeconds = unit.toSeconds(timeout);
-            return this;
-        }
-
-        public BiDiSmartWait build() {
-            if (driver == null) {
-                throw new IllegalStateException("WebDriver must be provided");
-            }
-            if (biDi == null) {
-                throw new IllegalStateException("BiDi must be provided");
-            }
-            return new BiDiSmartWait(driver, biDi, timeoutSeconds);
-        }
-    }
 }

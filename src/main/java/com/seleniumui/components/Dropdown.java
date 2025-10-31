@@ -1,8 +1,6 @@
 package com.seleniumui.components;
 
-import com.seleniumui.core.actions.SmartActions;
 import com.seleniumui.core.BaseComponent;
-import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,7 +21,7 @@ public class Dropdown extends BaseComponent {
     public void selectByText(String text) {
         Objects.requireNonNull(text, "Selection text cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             selectStandardByText(dropdown, text);
@@ -35,7 +33,7 @@ public class Dropdown extends BaseComponent {
     public void selectByValue(String value) {
         Objects.requireNonNull(value, "Selection value cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -48,7 +46,7 @@ public class Dropdown extends BaseComponent {
     public void selectByTexts(List<String> texts) {
         Objects.requireNonNull(texts, "Selection texts cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -67,7 +65,7 @@ public class Dropdown extends BaseComponent {
     public void selectByValues(List<String> values) {
         Objects.requireNonNull(values, "Selection values cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -86,7 +84,7 @@ public class Dropdown extends BaseComponent {
     public void addSelectionByText(String text) {
         Objects.requireNonNull(text, "Selection text cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -102,7 +100,7 @@ public class Dropdown extends BaseComponent {
     public void deselectByText(String text) {
         Objects.requireNonNull(text, "Deselection text cannot be null");
 
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -116,7 +114,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public void deselectAll() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -130,7 +128,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public String getSelectedText() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -148,7 +146,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public List<String> getSelectedTexts() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -162,7 +160,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public String getSelectedValue() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -179,7 +177,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public List<String> getSelectedValues() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             Select select = new Select(dropdown);
@@ -192,7 +190,7 @@ public class Dropdown extends BaseComponent {
     }
 
     public boolean isMultiple() {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         if (isStandardSelect(dropdown)) {
             return new Select(dropdown).isMultiple();
@@ -213,8 +211,8 @@ public class Dropdown extends BaseComponent {
             try {
                 WebElement option = dropdown.findElement(
                         By.xpath(".//option[normalize-space()='" + text + "']"));
-                SmartWait.forClickable(driver, option);
-                SmartActions.click(option);
+                smartWait.forClickable(option);
+                smartActions.click(option);
             } catch (Exception ex) {
                 throw new RuntimeException("Cannot select option with text: " + text, ex);
             }
@@ -222,16 +220,16 @@ public class Dropdown extends BaseComponent {
     }
 
     private void selectCustomByText(WebElement dropdown, String text) {
-        SmartWait.forClickable(driver, dropdown);
-        SmartActions.click(dropdown);
+        smartWait.forClickable(dropdown);
+        smartActions.click(dropdown);
         WebElement option = findCustomOption(text);
-        SmartWait.forClickable(driver, option);
-        SmartActions.click(option);
+        smartWait.forClickable(option);
+        smartActions.click(option);
     }
 
     private void selectCustomByTexts(WebElement dropdown, List<String> texts) {
-        SmartWait.forClickable(driver, dropdown);
-        SmartActions.click(dropdown);
+        smartWait.forClickable(dropdown);
+        smartActions.click(dropdown);
 
         for (String text : texts) {
             WebElement option = findCustomOption(text);
@@ -243,8 +241,8 @@ public class Dropdown extends BaseComponent {
 
     private void addCustomSelectionByText(WebElement dropdown, String text) {
         if (!isCustomDropdownOpen(dropdown)) {
-            SmartWait.forClickable(driver, dropdown);
-            SmartActions.click(dropdown);
+            smartWait.forClickable(dropdown);
+            smartActions.click(dropdown);
         }
 
         WebElement option = findCustomOption(text);
@@ -252,16 +250,16 @@ public class Dropdown extends BaseComponent {
     }
 
     private void selectCustomByValue(WebElement dropdown, String value) {
-        SmartWait.forClickable(driver, dropdown);
-        SmartActions.click(dropdown);
+        smartWait.forClickable(dropdown);
+        smartActions.click(dropdown);
         WebElement option = findOptionByValue(value);
-        SmartWait.forClickable(driver, option);
-        SmartActions.click(option);
+        smartWait.forClickable(option);
+        smartActions.click(option);
     }
 
     private void selectCustomByValues(WebElement dropdown, List<String> values) {
-        SmartWait.forClickable(driver, dropdown);
-        SmartActions.click(dropdown);
+        smartWait.forClickable(dropdown);
+        smartActions.click(dropdown);
 
         for (String value : values) {
             WebElement option = findOptionByValue(value);
@@ -280,8 +278,8 @@ public class Dropdown extends BaseComponent {
                     By.xpath(".//*[local-name()='svg'] | " +
                             ".//*[contains(@class, 'remove')] | " +
                             ".//*[contains(@class, 'clear')]"));
-            SmartWait.forClickable(driver, removeButton);
-            SmartActions.click(removeButton);
+            smartWait.forClickable(removeButton);
+            smartActions.click(removeButton);
             return;
 
         } catch (Exception e) {
@@ -289,8 +287,8 @@ public class Dropdown extends BaseComponent {
         }
 
         if (!isCustomDropdownOpen(dropdown)) {
-            SmartWait.forClickable(driver, dropdown);
-            SmartActions.click(dropdown);
+            smartWait.forClickable(dropdown);
+            smartActions.click(dropdown);
         }
 
         WebElement option = findCustomOption(text);
@@ -303,8 +301,8 @@ public class Dropdown extends BaseComponent {
                     By.xpath(".//*[contains(@class, 'multiValue')]//*[local-name()='svg']"));
 
             for (WebElement removeButton : removeButtons) {
-                SmartWait.forClickable(driver, removeButton);
-                SmartActions.click(removeButton);
+                smartWait.forClickable(removeButton);
+                smartActions.click(removeButton);
             }
         } catch (Exception e) {
             List<WebElement> selectedOptions = findCustomSelectedOptions(dropdown);
@@ -315,7 +313,7 @@ public class Dropdown extends BaseComponent {
     }
 
     private WebElement findCustomOption(String text) {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         By[] optionLocators = {
                 By.xpath(".//*[normalize-space()='" + text + "' and not(ancestor::*[contains(@style,'display: none')])]"),
@@ -356,7 +354,7 @@ public class Dropdown extends BaseComponent {
     }
 
     private WebElement findOptionByValue(String value) {
-        WebElement dropdown = SmartWait.forVisible(driver, locator);
+        WebElement dropdown = smartWait.forVisible(locator);
 
         By[] valueLocators = {
                 By.xpath(".//*[@value='" + value + "']"),
@@ -601,12 +599,12 @@ public class Dropdown extends BaseComponent {
         try {
             WebElement checkbox = option.findElement(By.xpath(".//input[@type='checkbox']"));
             if (!checkbox.isSelected()) {
-                SmartWait.forClickable(driver, checkbox);
-                SmartActions.scrollToElement(driver, checkbox);
-                SmartActions.click(checkbox);
+                smartWait.forClickable(checkbox);
+                smartActions.scrollToElement(checkbox);
+                smartActions.click(checkbox);
             }
         } catch (Exception e) {
-            SmartActions.click(option);
+            smartActions.click(option);
         }
     }
 
@@ -614,19 +612,19 @@ public class Dropdown extends BaseComponent {
         try {
             WebElement checkbox = option.findElement(By.xpath(".//input[@type='checkbox']"));
             if (checkbox.isSelected()) {
-                SmartWait.forClickable(driver, checkbox);
-                SmartActions.click(checkbox);
+                smartWait.forClickable(checkbox);
+                smartActions.click(checkbox);
             }
         } catch (Exception e) {
-            SmartWait.forClickable(driver, option);
-            SmartActions.click(option);
+            smartWait.forClickable(option);
+            smartActions.click(option);
         }
     }
 
     private void closeCustomDropdown(WebElement dropdown) {
         try {
-            SmartWait.forClickable(driver, dropdown);
-            SmartActions.click(dropdown);
+            smartWait.forClickable(dropdown);
+            smartActions.click(dropdown);
         } catch (Exception e) {
             // Ignore if it cannot close
         }

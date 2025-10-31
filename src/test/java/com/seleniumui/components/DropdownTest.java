@@ -1,6 +1,5 @@
 package com.seleniumui.components;
 
-import com.seleniumui.core.ComponentFactory;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,10 +9,10 @@ public class DropdownTest extends BaseTest{
     @Test
     public void sampleTest() {
         driver.get("https://demoqa.com/select-menu");
-        Dropdown dropdown = ComponentFactory.createComponent(Dropdown.class, By.id("oldSelectMenu"));
-        Dropdown dropdown2 = ComponentFactory.createComponent(Dropdown.class, By.id("selectOne"));
-        Dropdown dropdownMulti = ComponentFactory.createComponent(Dropdown.class, By.id("cars"));
-        Dropdown dropdownMulti2 = ComponentFactory.createComponent(Dropdown.class, By.xpath("//b[text()='Multiselect drop down']/ancestor::p/following-sibling::div"));
+        Dropdown dropdown = new Dropdown(driver, By.id("oldSelectMenu"));
+        Dropdown dropdown2 = new Dropdown(driver, By.id("salutation"));
+        Dropdown dropdownMulti = new Dropdown(driver, By.id("cars"));
+        Dropdown dropdownMulti2 = new Dropdown(driver, By.xpath("//b[text()='Multiselect drop down']/ancestor::p/following-sibling::div"));
 
         dropdown.selectByText("Blue");
         Assert.assertEquals(dropdown.getSelectedText(), "Blue", "Selected text should match the expected value.");

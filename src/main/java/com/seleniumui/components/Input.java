@@ -1,8 +1,6 @@
 package com.seleniumui.components;
 
-import com.seleniumui.core.actions.SmartActions;
 import com.seleniumui.core.BaseComponent;
-import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import java.util.Objects;
@@ -15,23 +13,23 @@ public class Input extends BaseComponent {
     }
 
     public void clear() {
-        SmartWait.forVisible(driver, locator);
-        SmartActions.clear(driver, locator);
+        smartWait.forVisible(locator);
+        smartActions.clear(locator);
     }
 
     public void type(String text) {
-        SmartWait.forVisible(driver, locator);
-        SmartActions.type(driver, locator, text);
+        smartWait.forVisible(locator);
+        smartActions.type(locator, text);
     }
 
     public void pressEnter() {
-        SmartWait.forVisible(driver, locator);
-        SmartActions.pressEnter(driver, locator);
+        smartWait.forVisible(locator);
+        smartActions.pressEnter(locator);
     }
 
     public void pressTab() {
-        SmartWait.forVisible(driver, locator);
-        SmartActions.pressTab(driver, locator);
+        smartWait.forVisible(locator);
+        smartActions.pressTab(locator);
     }
 
     public void clearAndType(String text) {
@@ -45,7 +43,7 @@ public class Input extends BaseComponent {
     }
 
     public String getValue() {
-        return SmartActions.getAttribute(driver, locator, "value");
+        return smartActions.getAttribute(locator, "value");
     }
 
     public void pressKeys(CharSequence... keys) {
@@ -53,7 +51,7 @@ public class Input extends BaseComponent {
         for (CharSequence key : keys) {
             combinedKeys.append(key);
         }
-        SmartWait.forVisible(driver, locator);
-        SmartActions.pressKey(driver, locator, combinedKeys);
+        smartWait.forVisible(locator);
+        smartActions.pressKey(locator, combinedKeys);
     }
 }

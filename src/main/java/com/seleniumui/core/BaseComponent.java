@@ -5,16 +5,21 @@ import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.*;
 
 public class BaseComponent {
+
     protected WebDriver driver;
     protected By locator;
+    protected SmartWait smartWait;
+    protected SmartActions smartActions;
 
     protected BaseComponent(WebDriver driver, By locator) {
         this.locator = locator;
         this.driver = driver;
+        this.smartWait = new SmartWait(driver);
+        this.smartActions = new SmartActions(driver);
     }
 
     protected WebElement find() {
-        return SmartWait.forVisible(driver, locator);
+        return smartWait.forVisible(locator);
     }
 
     public boolean isDisplayed() {
@@ -22,11 +27,11 @@ public class BaseComponent {
     }
 
     public String getAttribute(String attribute) {
-        return SmartActions.getAttribute(driver, locator, attribute);
+        return smartActions.getAttribute(locator, attribute);
     }
 
     public String getText() {
-        return SmartActions.getText(driver, locator);
+        return smartActions.getText(locator);
     }
 
     public boolean isEnabled() {
@@ -43,19 +48,19 @@ public class BaseComponent {
     }
 
     public void waitForInvisibility() {
-        SmartWait.forInvisible(driver, locator);
+        smartWait.forInvisible(locator);
     }
 
     public void waitForClickable() {
-        SmartWait.forClickable(driver, locator);
+        smartWait.forClickable(locator);
     }
 
     public void waitForPresence() {
-        SmartWait.forPresence(driver, locator);
+        smartWait.forPresence(locator);
     }
 
     public void scrollIntoView() {
-        SmartActions.scrollToElement(driver, locator);
+        smartActions.scrollToElement(locator);
     }
 
     public Point getLocation() {
@@ -84,11 +89,11 @@ public class BaseComponent {
     }
 
     public void hover() {
-        SmartActions.hoverOverElement(driver, locator);
+        smartActions.hoverOverElement(locator);
     }
 
     public void focus() {
-        SmartActions.focusElement(driver, locator);
+        smartActions.focusElement(locator);
     }
 
     public String getLocatorDescription() {

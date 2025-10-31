@@ -1,6 +1,5 @@
 package com.seleniumui.components;
 
-import com.seleniumui.core.ComponentFactory;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,10 +9,10 @@ public class InputTest extends BaseTest {
     @Test
     public void sampleTest() {
         driver.get("https://demoqa.com/text-box");
-        Input username = ComponentFactory.createComponent(Input.class, By.id("userName"));
-        Input email = ComponentFactory.createComponent(Input.class, By.id("userEmail"));
-        Input currentAddress = ComponentFactory.createComponent(Input.class, By.id("currentAddress"));
-        Input permanentAddress = ComponentFactory.createComponent(Input.class, By.id("permanentAddress"));
+        Input username = new Input(driver, By.id("userName"));
+        Input email = new Input(driver, By.id("userEmail"));
+        Input currentAddress = new Input(driver, By.id("currentAddress"));
+        Input permanentAddress = new Input(driver, By.id("permanentAddress"));
 
         username.clearAndType("John Doe");
         Assert.assertEquals(username.getValue(), "John Doe", "Username input value should match the typed text.");
