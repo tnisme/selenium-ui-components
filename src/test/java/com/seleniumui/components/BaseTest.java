@@ -1,6 +1,6 @@
 package com.seleniumui.components;
 
-import com.seleniumui.core.ComponentFactory;
+import com.seleniumui.core.SeleniumUI;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeTest;
 public class BaseTest {
 
     protected WebDriver driver;
+    protected SeleniumUI seleniumUI;
     private long startTime;
     private long totalTime;
 
@@ -33,11 +34,12 @@ public class BaseTest {
         options.setCapability("webSocketUrl", true);
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         driver = new ChromeDriver(options);
-        ComponentFactory.initialize(driver);
+        seleniumUI = SeleniumUI.initialize(driver);
     }
 
     @AfterClass
     public void tearDown() {
         if (driver != null) driver.quit();
+        if (seleniumUI != null) seleniumUI.close();
     }
 }

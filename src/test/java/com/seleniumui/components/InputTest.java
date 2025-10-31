@@ -9,10 +9,10 @@ public class InputTest extends BaseTest {
     @Test
     public void sampleTest() {
         driver.get("https://demoqa.com/text-box");
-        Input username = new Input(driver, By.id("userName"));
-        Input email = new Input(driver, By.id("userEmail"));
-        Input currentAddress = new Input(driver, By.id("currentAddress"));
-        Input permanentAddress = new Input(driver, By.id("permanentAddress"));
+        Input username = seleniumUI.input(By.id("userName"));
+        Input email = seleniumUI.input(By.id("userEmail"));
+        Input currentAddress = seleniumUI.input(By.id("currentAddress"));
+        Input permanentAddress = seleniumUI.input(By.id("permanentAddress"));
 
         username.clearAndType("John Doe");
         Assert.assertEquals(username.getValue(), "John Doe", "Username input value should match the typed text.");

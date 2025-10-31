@@ -1,6 +1,8 @@
 package com.seleniumui.components;
 
 import com.seleniumui.core.BaseComponent;
+import com.seleniumui.core.actions.SmartActions;
+import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,9 +15,8 @@ import java.util.stream.Collectors;
 
 public class Dropdown extends BaseComponent {
 
-    public Dropdown(WebDriver driver, By locator) {
-        super(Objects.requireNonNull(driver, "WebDriver cannot be null"),
-                Objects.requireNonNull(locator, "Locator cannot be null"));
+    public Dropdown(WebDriver driver, By locator, SmartWait smartWait, SmartActions smartActions) {
+        super(driver, locator, smartWait, smartActions);
     }
 
     public void selectByText(String text) {

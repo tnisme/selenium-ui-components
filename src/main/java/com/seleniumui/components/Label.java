@@ -1,12 +1,14 @@
 package com.seleniumui.components;
 
 import com.seleniumui.core.BaseComponent;
+import com.seleniumui.core.actions.SmartActions;
+import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class Label extends BaseComponent {
 
-    public Label(WebDriver driver, By locator) {
-        super(driver, locator);
+    public Label(WebDriver driver, By locator, SmartWait smartWait, SmartActions smartActions) {
+        super(driver, locator, smartWait, smartActions);
     }
 }

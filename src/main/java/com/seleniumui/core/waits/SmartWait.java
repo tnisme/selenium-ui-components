@@ -7,11 +7,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.Closeable;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
-public final class SmartWait {
+public final class SmartWait implements AutoCloseable{
 
     private final WebDriver driver;
     private final BiDiSmartWait biDiSmartWait;
@@ -132,5 +133,16 @@ public final class SmartWait {
 
     public long getDefaultPollIntervalMs() {
         return defaultPollIntervalMs;
+    }
+
+    @Override
+    public void close() {
+        if (biDiSmartWait instanceof Closeable) {
+            try {
+                ((Closeable) biDiSmartWait).close();
+            } catch (Exception e) {
+                System.out.println("Warning: Error during BiDiSmartWait cleanup: " + e.getMessage());
+            }
+        }
     }
 }

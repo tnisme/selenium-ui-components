@@ -11,11 +11,11 @@ public class BaseComponent {
     protected SmartWait smartWait;
     protected SmartActions smartActions;
 
-    protected BaseComponent(WebDriver driver, By locator) {
+    protected BaseComponent(WebDriver driver, By locator, SmartWait smartWait, SmartActions smartActions) {
         this.locator = locator;
         this.driver = driver;
-        this.smartWait = new SmartWait(driver);
-        this.smartActions = new SmartActions(driver);
+        this.smartWait = smartWait;
+        this.smartActions = smartActions;
     }
 
     protected WebElement find() {

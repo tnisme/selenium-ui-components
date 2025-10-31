@@ -9,10 +9,10 @@ public class DropdownTest extends BaseTest{
     @Test
     public void sampleTest() {
         driver.get("https://demoqa.com/select-menu");
-        Dropdown dropdown = new Dropdown(driver, By.id("oldSelectMenu"));
-        Dropdown dropdown2 = new Dropdown(driver, By.id("salutation"));
-        Dropdown dropdownMulti = new Dropdown(driver, By.id("cars"));
-        Dropdown dropdownMulti2 = new Dropdown(driver, By.xpath("//b[text()='Multiselect drop down']/ancestor::p/following-sibling::div"));
+        Dropdown dropdown = seleniumUI.dropdown(By.id("oldSelectMenu"));
+        Dropdown dropdown2 = seleniumUI.dropdown(By.id("salutation"));
+        Dropdown dropdownMulti = seleniumUI.dropdown(By.id("cars"));
+        Dropdown dropdownMulti2 = seleniumUI.dropdown(By.xpath("//b[text()='Multiselect drop down']/ancestor::p/following-sibling::div"));
 
         dropdown.selectByText("Blue");
         Assert.assertEquals(dropdown.getSelectedText(), "Blue", "Selected text should match the expected value.");

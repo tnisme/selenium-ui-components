@@ -1,15 +1,16 @@
 package com.seleniumui.components;
 
 import com.seleniumui.core.BaseComponent;
+import com.seleniumui.core.actions.SmartActions;
+import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import java.util.Objects;
 
 public class Input extends BaseComponent {
 
-    public Input(WebDriver driver, By locator) {
-        super(Objects.requireNonNull(driver, "WebDriver cannot be null"), 
-              Objects.requireNonNull(locator, "Locator cannot be null"));
+    public Input(WebDriver driver, By locator, SmartWait smartWait, SmartActions smartActions) {
+        super(driver, locator, smartWait, smartActions);
     }
 
     public void clear() {

@@ -8,15 +8,18 @@ import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class BiDiSmartWait {
+public class BiDiSmartWait implements AutoCloseable {
     private final BiDi biDi;
     private final WebDriver driver;
     private final long defaultTimeoutSeconds;
@@ -34,6 +37,7 @@ public class BiDiSmartWait {
     private final AtomicInteger activeRequestCount = new AtomicInteger(0);
     private final AtomicLong lastNetworkActivityTime = new AtomicLong(System.currentTimeMillis());
     private boolean networkMonitoringEnabled = false;
+    private final AtomicBoolean isShutdown = new AtomicBoolean(false);
 
     // Console message filtering
     private final Map<String, Predicate<ConsoleLogEntry>> consoleFilters;
@@ -551,8 +555,11 @@ public class BiDiSmartWait {
 
     // Enhanced cleanup with better resource management
     public void shutdown() {
-        // Cancel all pending waits with proper cleanup
-        pendingFutures.forEach((key, future) -> {
+        if (!isShutdown.compareAndSet(false, true)) {
+            return;
+        }
+
+        pendingFutures.values().forEach(future -> {
             if (!future.isDone()) {
                 future.cancel(true);
             }
@@ -560,22 +567,23 @@ public class BiDiSmartWait {
         pendingFutures.clear();
         consoleFilters.clear();
 
-        // Cancel DOM monitoring
         if (domStabilityChecker != null) {
-            domStabilityChecker.cancel(true);
+            domStabilityChecker.cancel(false); // interruptIfRunning = false để tránh InterruptedException không cần thiết
         }
 
-        // Remove all event listeners
         eventListeners.keySet().forEach(listenerId -> {
             try {
                 biDi.removeListener(listenerId);
             } catch (Exception e) {
-                // Ignore errors during cleanup
+                System.err.println("Failed to remove event listener " + listenerId + ": " + e.getMessage());
             }
         });
         eventListeners.clear();
 
-        // Shutdown scheduler
+        shutdownScheduler();
+    }
+
+    private void shutdownScheduler() {
         scheduler.shutdown();
         try {
             if (!scheduler.awaitTermination(3, TimeUnit.SECONDS)) {
@@ -584,20 +592,14 @@ public class BiDiSmartWait {
                     System.err.println("Scheduler did not terminate");
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ie) {
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        try {
-            if (!scheduler.isShutdown()) {
-                shutdown();
-            }
-        } finally {
-            super.finalize();
-        }
+    public void close() {
+        shutdown();
     }
 }
