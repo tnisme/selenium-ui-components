@@ -3,6 +3,7 @@ package com.seleniumui.components;
 import com.seleniumui.core.BaseComponent;
 import com.seleniumui.core.actions.SmartActions;
 import com.seleniumui.core.waits.SmartWait;
+import com.seleniumui.exceptions.DropdownSelectionException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,6 +12,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Dropdown extends BaseComponent {
@@ -215,7 +217,7 @@ public class Dropdown extends BaseComponent {
                 smartWait.forClickable(option);
                 smartActions.click(option);
             } catch (Exception ex) {
-                throw new RuntimeException("Cannot select option with text: " + text, ex);
+                throw new DropdownSelectionException("Cannot select option with text: " + text, ex);
             }
         }
     }
@@ -351,7 +353,7 @@ public class Dropdown extends BaseComponent {
             }
         }
 
-        throw new RuntimeException("Cannot find option with text: " + text);
+        throw new DropdownSelectionException("Cannot find option with text: " + text);
     }
 
     private WebElement findOptionByValue(String value) {
@@ -388,7 +390,7 @@ public class Dropdown extends BaseComponent {
             }
         }
 
-        throw new RuntimeException("Cannot find option with value: " + value);
+        throw new DropdownSelectionException("Cannot find option with value: " + value);
     }
 
     private String getCustomSelectedText(WebElement dropdown) {
@@ -638,7 +640,7 @@ public class Dropdown extends BaseComponent {
         return !lowerText.contains("select") &&
                 !lowerText.contains("option") &&
                 !lowerText.contains("search") &&
-                !lowerText.matches(".*\\d+ options.*") &&
+                !Pattern.compile("\\n\\n\\s+options", Pattern.CASE_INSENSITIVE).matcher(text).find() &&
                 text.length() < 100;
     }
 
@@ -649,7 +651,7 @@ public class Dropdown extends BaseComponent {
         return !lowerText.contains("select") &&
                 !lowerText.contains("option") &&
                 !lowerText.contains("search") &&
-                !lowerText.matches(".*\\d+ options.*") &&
+                !Pattern.compile("\\n\\n\\s+options", Pattern.CASE_INSENSITIVE).matcher(text).find() &&
                 !lowerText.contains("click to") &&
                 text.length() < 50;
     }

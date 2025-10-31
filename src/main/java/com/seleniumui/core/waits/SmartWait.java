@@ -137,9 +137,9 @@ public final class SmartWait implements AutoCloseable{
 
     @Override
     public void close() {
-        if (biDiSmartWait instanceof Closeable) {
+        if (biDiSmartWait instanceof Closeable closeable) {
             try {
-                ((Closeable) biDiSmartWait).close();
+                closeable.close();
             } catch (Exception e) {
                 System.out.println("Warning: Error during BiDiSmartWait cleanup: " + e.getMessage());
             }

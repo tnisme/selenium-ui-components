@@ -5,7 +5,6 @@ import com.seleniumui.core.actions.SmartActions;
 import com.seleniumui.core.waits.SmartWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import java.util.Objects;
 
 public class Input extends BaseComponent {
 

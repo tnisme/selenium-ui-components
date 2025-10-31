@@ -10,7 +10,7 @@ public class DropdownTest extends BaseTest{
     public void sampleTest() {
         driver.get("https://demoqa.com/select-menu");
         Dropdown dropdown = seleniumUI.dropdown(By.id("oldSelectMenu"));
-        Dropdown dropdown2 = seleniumUI.dropdown(By.id("salutation"));
+        Dropdown dropdown2 = seleniumUI.dropdown(By.id("selectOne"));
         Dropdown dropdownMulti = seleniumUI.dropdown(By.id("cars"));
         Dropdown dropdownMulti2 = seleniumUI.dropdown(By.xpath("//b[text()='Multiselect drop down']/ancestor::p/following-sibling::div"));
 

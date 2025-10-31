@@ -1,5 +1,7 @@
 package com.seleniumui.core.waits;
 
+import com.seleniumui.exceptions.BiDiInitializationException;
+import com.seleniumui.exceptions.WaitConditionFailedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -8,8 +10,6 @@ import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -69,9 +69,9 @@ public class BiDiSmartWait implements AutoCloseable {
     private void initializeEventListeners() {
         try {
             // Subscribe to console events with proper typing
-//            Event<Map<String, Object>> consoleEvent = new Event<>("log.entryAdded", input -> input);
-//            long consoleListenerId = biDi.addListener(consoleEvent, this::handleConsoleEvent);
-//            eventListeners.put(consoleListenerId, consoleEvent);
+            Event<Map<String, Object>> consoleEvent = new Event<>("log.entryAdded", input -> input);
+            long consoleListenerId = biDi.addListener(consoleEvent, this::handleConsoleEvent);
+            eventListeners.put(consoleListenerId, consoleEvent);
 
             // Subscribe to DOM content loaded for resetting states
             Event<Map<String, Object>> domContentEvent = new Event<>("browsingContext.domContentLoaded", input -> input);
@@ -85,7 +85,7 @@ public class BiDiSmartWait implements AutoCloseable {
             enableNetworkMonitoring();
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize BiDi event listeners", e);
+            throw new BiDiInitializationException("Failed to initialize BiDi event listeners", e);
         }
     }
 
@@ -436,7 +436,7 @@ public class BiDiSmartWait implements AutoCloseable {
                                     " (checked " + checkCount.get() + " times)"));
                 }
             } catch (Exception e) {
-                future.completeExceptionally(new RuntimeException("Condition check failed: " + e.getMessage(), e));
+                future.completeExceptionally(new WaitConditionFailedException("Condition check failed: " + e.getMessage(), e));
             }
         }, 0, 100, TimeUnit.MILLISECONDS);
 
@@ -459,8 +459,8 @@ public class BiDiSmartWait implements AutoCloseable {
     public CompletableFuture<Void> waitFor(WaitCondition condition, Object... params) {
         switch (condition) {
             case CONSOLE_MESSAGE:
-                if (params.length > 0 && params[0] instanceof String) {
-                    return waitForConsoleMessage((String) params[0]).thenApply(result -> null);
+                if (params.length > 0 && params[0] instanceof String string) {
+                    return waitForConsoleMessage(string).thenApply(result -> null);
                 } else if (params.length > 0 && params[0] instanceof Predicate) {
                     @SuppressWarnings("unchecked")
                     Predicate<ConsoleLogEntry> filter = (Predicate<ConsoleLogEntry>) params[0];
@@ -469,8 +469,8 @@ public class BiDiSmartWait implements AutoCloseable {
                 throw new IllegalArgumentException("Console message condition requires String or Predicate parameter");
 
             case DOM_STABLE:
-                if (params.length > 0 && params[0] instanceof Long) {
-                    return waitForDomStable((Long) params[0]);
+                if (params.length > 0 && params[0] instanceof Long timeMs) {
+                    return waitForDomStable(timeMs);
                 }
                 return waitForDomStable(1000);
 
@@ -478,8 +478,8 @@ public class BiDiSmartWait implements AutoCloseable {
                 return waitForDomReady();
 
             case NETWORK_IDLE:
-                if (params.length > 0 && params[0] instanceof Long) {
-                    return waitForNetworkIdle((Long) params[0]);
+                if (params.length > 0 && params[0] instanceof Long timeMs) {
+                    return waitForNetworkIdle(timeMs);
                 }
                 return waitForNetworkIdle(500);
 
